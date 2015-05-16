@@ -1,5 +1,6 @@
 # talkingUbuntu
 A simple python script for Ubuntu and other Buntus that monitor DBus notifications and speak it
+(tested in Kubuntu 15.04)
 
 This script requires working installation of the following packages:
 - libttspico-utils (Available at Software Center)
