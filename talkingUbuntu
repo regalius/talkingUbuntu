@@ -1,0 +1,55 @@
+#!/usr/bin/python
+import glib
+import dbus
+import subprocess
+import re
+
+from dbus.mainloop.glib import DBusGMainLoop
+
+excludedApps=["Clementine"]
+
+def striphtml(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
+
+def filter(data):
+    if len(data.split(',',1)[1]) > 100:
+        m = data.split(',',1)[0]
+    else:
+        m = data.split(',',1)[1]
+    m = striphtml(m)
+    p = re.compile('<[^>]*>')
+    m = p.sub('',m)
+    p= re.compile('[^a-zA-Z.,@\d\s:]')
+    m = p.sub('',m)
+    return m
+
+def notifications(bus, msg):
+   global excludedApps
+   cnt = 0
+   message = ""
+   for str in msg.get_args_list(byte_arrays=True):
+     while cnt < 5:
+       if cnt==0:
+	for apps in excludedApps:
+	 if str== apps:
+           cnt=5
+       if cnt == 3:
+	 message+=striphtml(str)
+       if cnt == 4: 
+         message+= ", " + striphtml(str)
+       cnt += 1
+       break
+   if message!="":
+     filteredMessage = filter(message)
+     print filteredMessage
+     subprocess.call(["picospeaker", filteredMessage])
+
+DBusGMainLoop(set_as_default=True)
+
+bus = dbus.SessionBus()
+bus.add_match_string_non_blocking("eavesdrop=true, interface='org.freedesktop.Notifications', member='Notify'")
+bus.add_message_filter(notifications)
+
+mainloop = glib.MainLoop()
+mainloop.run()
