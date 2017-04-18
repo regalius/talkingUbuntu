@@ -6,7 +6,7 @@ This script requires working installation of the following packages:
 - libttspico-utils (Available at Software Center)
 - libttspico0 (Available at Software Center)
 - libttspico-data (Available at Software Center)
-- PicoSpeaker script written by Kyle (http://picospeaker.tk/)
+- PicoSpeaker script written by Kyle (https://github.com/the-kyle/picospeaker)
 
 # USAGE
 Include the script on autostart.
